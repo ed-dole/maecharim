@@ -7,7 +7,7 @@
   const API_URL =
     'https://script.google.com/macros/s/AKfycbwnwWu2oaPUU_UUvaYtP0yP4O6cEfZ23N5vUndfFTNbJgpGWaoJaX6yZ6on7MNk2j_1/exec';
 
-  const HOMEFAST_CACHE_KEY = 'homefast-v3';
+  const HOMEFAST_CACHE_KEY = 'homefast-v4-login-design';
   const HOMEFAST_TTL = 2 * 60 * 1000;
   const HOMEFAST_STALE_TTL = 15 * 60 * 1000;
   const NETWORK_TIMEOUT = 15000;
@@ -1495,6 +1495,74 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     document.addEventListener('DOMContentLoaded', scheduleHomeSummary, { once: true });
   } else {
     scheduleHomeSummary();
+  }
+})();
+
+
+/* ===== student-services-login-design.js ===== */
+(() => {
+  'use strict';
+
+  function text(value) {
+    return String(value == null ? '' : value).trim();
+  }
+
+  function setImage(imageId, wrapId, url) {
+    const image = document.getElementById(imageId);
+    const wrap = wrapId ? document.getElementById(wrapId) : image;
+    if (!image) return;
+
+    const value = text(url);
+    if (!value) {
+      image.removeAttribute('src');
+      if (wrap) wrap.hidden = true;
+      return;
+    }
+
+    image.onload = () => {
+      if (wrap) wrap.hidden = false;
+    };
+    image.onerror = () => {
+      image.removeAttribute('src');
+      if (wrap) wrap.hidden = true;
+    };
+    image.src = value;
+  }
+
+  function renderStudentLoginDesign(data) {
+    data = data || {};
+
+    const systemName = document.getElementById('studentServicesSystemName');
+    const organization = document.getElementById('studentServicesOrganization');
+
+    if (systemName) {
+      systemName.textContent = text(data.systemName) || 'ระบบช่วยเหลือผู้เรียน';
+    }
+    if (organization) {
+      organization.textContent = text(data.organization);
+      organization.hidden = !text(data.organization);
+    }
+
+    // design_page!C2 = โลโก้ (ตำแหน่ง 1)
+    setImage('studentServicesLogo', 'studentServicesLogoWrap', data.logo);
+    // design_page!C5 = ภาพด้านบน (ตำแหน่ง 2)
+    setImage('studentServicesBanner', null, data.banner);
+  }
+
+  async function loadStudentLoginDesign() {
+    try {
+      if (!window.SiteFast) return;
+      const data = await window.SiteFast.homePart('studentLogin');
+      renderStudentLoginDesign(data);
+    } catch (error) {
+      console.warn('student login design:', error);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadStudentLoginDesign, { once: true });
+  } else {
+    loadStudentLoginDesign();
   }
 })();
 
