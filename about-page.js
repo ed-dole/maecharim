@@ -94,6 +94,7 @@
       if (item.detail) {
         const copy = document.createElement('p');
         copy.className = 'vision-copy';
+        // ตั้งแต่ Q4 ลงไป เครื่องหมาย / แสดงเป็นขึ้นบรรทัดใหม่
         copy.textContent = slashToNewline(item.detail);
         section.appendChild(copy);
       }
@@ -109,15 +110,18 @@
       setText('contactAddress', data.address),
       setText('contactPhone', data.phone),
       setSocial('contactFacebook', data.facebook),
-      setSocial('contactLine', data.line)
+      setSocial('contactLine', data.line),
+      setSocial('contactYoutube', data.youtube)
     ];
+
     const socials = document.getElementById('contactSocials');
-    if (socials) socials.hidden = !(visible[3] || visible[4]);
+    if (socials) socials.hidden = !(visible[3] || visible[4] || visible[5]);
 
     const coordinate = text(data.coordinate);
     const wrap = document.getElementById('contactMapWrap');
     const frame = document.getElementById('contactMap');
     const link = document.getElementById('contactMapLink');
+
     if (coordinate && wrap && frame && link) {
       const query = encodeURIComponent(coordinate);
       frame.src = `https://www.google.com/maps?q=${query}&z=14&output=embed`;
@@ -126,6 +130,7 @@
     } else if (wrap) {
       wrap.hidden = true;
     }
+
     if (!visible.some(Boolean) && !coordinate && panel) {
       panel.innerHTML = '<div class="about-empty">ยังไม่มีข้อมูลสำหรับแสดง</div>';
     }
@@ -134,14 +139,17 @@
   async function loadAboutPage() {
     const page = text(document.body.dataset.aboutPage).toLowerCase();
     const content = document.getElementById('aboutPageContent');
+
     try {
       const url = new URL(API_URL);
       url.searchParams.set('mode', 'aboutPages');
       url.searchParams.set('_t', Date.now());
       const response = await fetch(url.toString(), { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
       const result = await response.json();
       if (result.success === false) throw new Error(result.message || 'โหลดข้อมูลไม่สำเร็จ');
+
       if (page === 'vision') renderVision(result.vision || {});
       else if (page === 'contact') renderContact(result.contact || {});
     } catch (error) {
