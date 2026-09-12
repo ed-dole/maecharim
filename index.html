@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="เว็บไซต์ร้านหนังสือสไตล์ภาพประกอบ พร้อมใช้งานบน GitHub Pages" />
-  <title>สกร.ระดับอำเภอแม่จริม</title>
+  <title>สกร.ระดับอำเภอบ่อเกลือ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -16,8 +16,8 @@
     // Cold load: เริ่ม homefast ตั้งแต่ <head>.
     // Repeat load: ถ้ามี cache ที่ยังใช้ได้ ไม่ยิง Apps Script ซ้ำให้แย่ง bandwidth กับ CSS/รูปภาพ.
     (function () {
-      var cacheKey = 'SITE_FAST:homefast-v4-login-design';
-      var maxAge = 15 * 60 * 1000;
+      var cacheKey = 'SITE_FAST:homefast-v10-resilient-20260912';
+      var maxAge = 24 * 60 * 60 * 1000;
       var admin = false;
       try { admin = Boolean(sessionStorage.getItem('mysiteAdminToken')); } catch (_) {}
 
@@ -32,7 +32,7 @@
       if (!admin && (hasUsable(window.sessionStorage) || hasUsable(window.localStorage))) return;
 
       var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      var timer = controller ? setTimeout(function () { controller.abort(); }, 14000) : null;
+      var timer = controller ? setTimeout(function () { controller.abort(); }, 30000) : null;
       window.__SITE_HOMEFAST_PREFETCH = fetch(
         'https://script.google.com/macros/s/AKfycbwnwWu2oaPUU_UUvaYtP0yP4O6cEfZ23N5vUndfFTNbJgpGWaoJaX6yZ6on7MNk2j_1/exec?mode=homefast',
         { method: 'GET', cache: 'default', credentials: 'omit', signal: controller ? controller.signal : undefined }
@@ -675,7 +675,7 @@
   </footer>
 
 <script defer src="button-section.js?v=20260904-buttonsection-preview-active-3"></script>
-<script defer src="index-fast.js?v=20260911-login-design-1"></script>
+<script defer src="index-fast.js?v=20260912-performance-resilient-1"></script>
 
 <!-- Student Modal -->
 <div id="studentModal" class="learning-modal">
